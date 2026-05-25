@@ -1,0 +1,61 @@
+---
+import Base from '../layouts/Base.astro';
+import { getCollection } from 'astro:content';
+import { formatDate, sortByDate } from '../lib/utils';
+
+const posts = sortByDate(
+  (await getCollection('posts')).filter(p => !p.data.draft)
+).slice(0, 5);
+
+const tils = sortByDate(
+  (await getCollection('til')).filter(t => !t.data.draft)
+).slice(0, 8);
+---
+
+<Base>
+  <div class="home-hero">
+    <div class="home-greeting">// research archive</div>
+    <h1 class="home-name">TK<br /><span class="accent">cyber risk · probabilistic systems · trading</span></h1>
+    <p class="home-bio">
+      Software engineer exploring cyber risk, probabilistic systems, simulation, and decision-making under uncertainty.
+      I build attritional loss models for insurance pricing, research Monte Carlo methods, and day trade in the mornings.
+    </p>
+    <div class="home-pills">
+      <span class="pill cyber">cyber risk</span>
+      <span class="pill trading">Monte Carlo</span>
+      <span class="pill trading">options / ETFs</span>
+      <span class="pill swe">python · rust · go</span>
+      <span class="pill infra">AI / systems</span>
+    </div>
+  </div>
+
+  <div class="home-sections">
+    <div class="home-section">
+      <h2>recent posts</h2>
+      <div class="compact-list">
+        {posts.map(post => (
+          <a href={`/posts/${post.slug}`} class="compact-item">
+            <span class="compact-date">{formatDate(post.data.date)}</span>
+            <span class="compact-title">{post.data.title}</span>
+          </a>
+        ))}
+        {posts.length === 0 && <span style="font-size:0.85rem; color: var(--text-dim);">First post coming soon.</span>}
+      </div>
+      <a href="/posts" class="see-all">all posts →</a>
+    </div>
+
+    <div class="home-section">
+      <h2>today i learned</h2>
+      <div class="compact-list">
+        {tils.map(til => (
+          <a href={`/til/${til.slug}`} class="compact-item til-link">
+            <span class="compact-date">{formatDate(til.data.date)}</span>
+            <span class="compact-title">{til.data.title}</span>
+          </a>
+        ))}
+        {tils.length === 0 && <span style="font-size:0.85rem; color: var(--text-dim);">First TIL coming soon.</span>}
+      </div>
+      <a href="/til" class="see-all">all TILs →</a>
+    </div>
+  </div>
+</Base>

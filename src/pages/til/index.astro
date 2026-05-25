@@ -1,0 +1,52 @@
+---
+import Base from '../../layouts/Base.astro';
+import { getCollection } from 'astro:content';
+import { formatDate, sortByDate } from '../../lib/utils';
+
+const tils = sortByDate(
+  (await getCollection('til')).filter(t => !t.data.draft)
+);
+
+const byYear = tils.reduce((acc, til) => {
+  const year = til.data.date.getUTCFullYear().toString();
+  if (!acc[year]) acc[year] = [];
+  acc[year].push(til);
+  return acc;
+}, {} as Record<string, typeof tils>);
+
+const years = Object.keys(byYear).sort((a, b) => Number(b) - Number(a));
+---
+
+<Base title="TIL">
+  <div class="page-header">
+    <h1 class="page-title"><span class="prefix">#</span> today i learned</h1>
+    <p class="page-desc">Daily notes. Short, rough, real. Things that clicked, things that surprised me.</p>
+  </div>
+
+  {years.map(year => (
+    <div style="margin-bottom: 2.5rem;">
+      <div style="font-family: var(--font-mono); font-size: 0.72rem; color: var(--text-dim); margin-bottom: 0.75rem;">{year}</div>
+      <div class="til-grid">
+        {byYear[year].map(til => (
+          <a href={`/til/${til.slug}`} class="til-item">
+            <span class="post-date">{formatDate(til.data.date)}</span>
+            <div>
+              <div class="post-title">{til.data.title}</div>
+              {til.data.tags.length > 0 && (
+                <div class="post-tags" style="margin-top: 0.2rem;">
+                  {til.data.tags.map(tag => (
+                    <span class:list={['tag', tag]}>{tag}</span>
+                  ))}
+                </div>
+              )}
+            </div>
+          </a>
+        ))}
+      </div>
+    </div>
+  ))}
+
+  {tils.length === 0 && (
+    <p style="color: var(--text-muted); font-size: 0.9rem;">No TILs yet. First one incoming.</p>
+  )}
+</Base>

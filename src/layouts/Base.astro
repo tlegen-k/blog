@@ -1,0 +1,57 @@
+---
+import '../styles/global.css';
+
+interface Props {
+  title?: string;
+  description?: string;
+}
+
+const { title = 'TK', description = 'Software engineer exploring cyber risk, probabilistic systems, simulation, and decision-making under uncertainty.' } = Astro.props;
+const fullTitle = title === 'TK' ? 'TK — research archive' : `${title} — TK`;
+const currentPath = Astro.url.pathname;
+---
+
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content={description} />
+  <title>{fullTitle}</title>
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+  <link rel="alternate" type="application/rss+xml" title="TK — Research Archive" href="/rss.xml" />
+  <link rel="sitemap" href="/sitemap-index.xml" />
+</head>
+<body>
+  <header>
+    <div class="container header-inner">
+      <a href="/" class="logo">tk<span>.</span>dev</a>
+      <nav>
+        <a href="/" class:list={[{ active: currentPath === '/' }]}>home</a>
+        <a href="/posts" class:list={[{ active: currentPath.startsWith('/posts') }]}>posts</a>
+        <a href="/til" class:list={[{ active: currentPath.startsWith('/til') }]}>til</a>
+        <a href="/research" class:list={[{ active: currentPath.startsWith('/research') }]}>research</a>
+        <a href="/projects" class:list={[{ active: currentPath.startsWith('/projects') }]}>projects</a>
+        <a href="/about" class:list={[{ active: currentPath === '/about' }]}>about</a>
+        <a href="/rss.xml" class="rss-link" target="_blank">rss</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <div class="container">
+      <slot />
+    </div>
+  </main>
+
+  <footer>
+    <div class="container footer-inner">
+      <span>© {new Date().getFullYear()} TK</span>
+      <div class="footer-links">
+        <a href="https://github.com/yourusername" target="_blank">github</a>
+        <a href="/rss.xml">rss</a>
+      </div>
+    </div>
+  </footer>
+</body>
+</html>
