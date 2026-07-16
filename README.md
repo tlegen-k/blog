@@ -13,8 +13,8 @@ Minimal personal research archive focused on cyber risk, probabilistic systems, 
 
 ```bash
 pnpm install
-pnpm dev             # localhost:4321
-pnpm build           # outputs to dist/
+pnpm dev             # syncs vault content, then starts localhost:4321
+pnpm build           # syncs vault content, then outputs to dist/
 pnpm preview         # preview the build
 ```
 
@@ -68,7 +68,23 @@ draft: false
 
 ## Obsidian workflow
 
-Write in `Publishing/Astro Export/` — only content in that folder is public. Symlink `src/content/` into your vault or set vault root inside the repo.
+Write in `Publishing/Astro Export/` — only content in that folder is public.
+
+### Local content sync
+
+The content sources are your vault's `~/Documents/second-brain/Publishing/posts` and
+`~/Documents/second-brain/Publishing/til` directories. `pnpm dev` and `pnpm build`
+mirror both into the local Astro collections automatically; use `pnpm sync:content` to
+mirror them on demand. The mirrored `src/content/posts/` and `src/content/til/`
+directories are ignored by git.
+
+On a machine where the vault lives elsewhere, set `CONTENT_POSTS_DIR` and/or
+`CONTENT_TIL_DIR` before running a command, for example:
+
+```bash
+CONTENT_POSTS_DIR=/path/to/Publishing/posts \
+CONTENT_TIL_DIR=/path/to/Publishing/til pnpm build
+```
 
 Workflow:
 ```

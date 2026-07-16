@@ -5,11 +5,11 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 ## Commands
 
 ```bash
-pnpm dev          # dev server at localhost:4321
-pnpm build        # static output → dist/
+pnpm dev          # syncs vault content, then starts the dev server at localhost:4321
+pnpm build        # syncs vault content, then writes static output → dist/
 pnpm preview      # preview built output
 pnpm astro sync   # regenerate content collection types (run after editing config.ts)
-./deploy.sh       # build + rsync to VPS (edit VPS_USER/VPS_HOST first)
+./deploy.sh       # build + rsync to the hard-coded VPS; do not run until all content is available
 ```
 
 No test suite. No linter configured.
@@ -25,7 +25,8 @@ Astro v4 static site. Two content collections defined in `src/content/config.ts`
 - **`posts`** — longer structured writing. Requires `description` (used in RSS/meta). Lives in `src/content/posts/`.
 - **`til`** — short daily notes (Today I Learned). No `description`. Lives in `src/content/til/`.
 
-Both collections filter by `draft: false` at query time.
+Homepage, index pages, and RSS filter by `draft: false`. Individual dynamic routes
+currently generate every entry, including drafts, so `draft` is not a privacy control.
 
 **Sections**: `/posts`, `/til`, `/research`, `/projects`, `/about`. The research, projects, and about pages are static stubs — no content collection backing them.
 
@@ -69,4 +70,18 @@ draft: false
 
 ## Obsidian workflow
 
-Only content in `Publishing/Astro Export/` is public. Symlink `src/content/` into the vault or set vault root inside the repo.
+Only content in `Publishing/Astro Export/` is public. Post and TIL source content lives
+at `~/Documents/second-brain/Publishing/posts` and
+`~/Documents/second-brain/Publishing/til` by default. Both are mirrored into ignored
+`src/content/` directories by `pnpm dev`, `pnpm build`, or `pnpm sync:content`.
+
+Set `CONTENT_POSTS_DIR` and/or `CONTENT_TIL_DIR` to use a vault stored elsewhere. Do
+not replace collection directories with external symlinks: Astro resolves them outside
+`src/content` and fails to identify the collections.
+
+## Deployment safety
+
+`deploy.sh` deletes `dist/` and uses `rsync --delete` to deploy to its hard-coded host,
+user, port, and destination. Do not run it when the generated output has not been
+reviewed. The GitHub Actions workflow likewise cannot
+access this machine's local vault content.

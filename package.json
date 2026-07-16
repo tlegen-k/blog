@@ -3,7 +3,12 @@
   "type": "module",
   "version": "1.0.0",
   "scripts": {
+    "sync:posts": "node scripts/sync-content.mjs posts",
+    "sync:til": "node scripts/sync-content.mjs til",
+    "sync:content": "pnpm sync:posts && pnpm sync:til",
+    "predev": "pnpm sync:content",
     "dev": "astro dev",
+    "prebuild": "pnpm sync:content",
     "build": "astro build",
     "preview": "astro preview"
   },
