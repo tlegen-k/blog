@@ -22,6 +22,8 @@ jobs:
       - run: pnpm install --frozen-lockfile
 
       - run: pnpm build
+        env:
+          SITE_URL: https://yourdomain.com
 
       - name: Deploy to VPS
         run: |

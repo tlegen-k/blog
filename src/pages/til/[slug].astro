@@ -4,10 +4,12 @@ import PostLayout from '../../layouts/PostLayout.astro';
 
 export async function getStaticPaths() {
   const tils = await getCollection('til');
-  return tils.map(til => ({
-    params: { slug: til.slug },
-    props: { til },
-  }));
+  return tils
+    .filter(til => til.data.draft !== true)
+    .map(til => ({
+      params: { slug: til.slug },
+      props: { til },
+    }));
 }
 
 const { til } = Astro.props;

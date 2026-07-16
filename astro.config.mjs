@@ -4,7 +4,7 @@ import rss from '@astrojs/rss';
 import sitemap from '@astrojs/sitemap';
 
 export default defineConfig({
-  site: 'https://yourdomain.com',
+  site: process.env.SITE_URL || 'https://yourdomain.com',
   integrations: [mdx(), sitemap()],
   markdown: {
     shikiConfig: {
